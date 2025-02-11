@@ -1,33 +1,52 @@
-# GNU Compiler
-CC = gcc
-# Intel Compiler
+# Compiler settings
+GC = gcc
 ICC = icc
+
 # Compiler flags
-CFLAGS = -Wall -std=c99
-# Linker flags
-LDFLAGS = -lm
-# OpenMP flag
-OMP = -fopenmp
+GCFLAGS = -std=c99 -lm -fopenmp
+ICCFLAGS = -std=c99 -lm -qopenmp
 
-# Targets and dependencies
-ci: cInsertion.c coordReader.c
-	$(CC) $(CFLAGS) -o ci cInsertion.c coordReader.c $(LDFLAGS)
+# Output executables
+SSI_EXE = ssi.exe
+MMI_EXE = mmi.exe
+SSOMP_EXE = ssomp.exe
+MMOMP_EXE = mmomp.exe
+ISSOMP_EXE = issomp.exe
+IMMOMP_EXE = immomp.exe
 
-fi: fInsertion.c coordReader.c
-	$(CC) $(CFLAGS) -o fi fInsertion.c coordReader.c $(LDFLAGS)
+# Rules
+all: ssi mmi ssomp mmomp issomp immomp
 
-comp: ompcInsertion.c coordReader.c
-	$(CC) $(CFLAGS) $(OMP) -o comp ompcInsertion.c coordReader.c $(LDFLAGS)
+ssi: $(SSI_EXE)
 
-fomp: ompfInsertion.c coordReader.c
-	$(CC) $(CFLAGS) $(OMP) -o fomp ompfInsertion.c coordReader.c $(LDFLAGS)
+mmi: $(MMI_EXE)
 
-icomp: ompcInsertion.c coordReader.c
-	$(ICC) -o icomp ompcInsertion.c coordReader.c $(LDFLAGS) $(OMP)
+ssomp: $(SSOMP_EXE)
 
-ifomp: ompfInsertion.c coordReader.c
-	$(ICC) -o ifomp ompfInsertion.c coordReader.c $(LDFLAGS) $(OMP)
+mmomp: $(MMOMP_EXE)
+
+issomp: $(ISSOMP_EXE)
+
+immomp: $(IMMOMP_EXE)
+
+$(SSI_EXE): ssInsertion.c coordReader.c
+	$(GC) -o $@ $^ $(GCFLAGS)
+
+$(MMI_EXE): mmInsertion.c coordReader.c
+	$(GC) -o $@ $^ $(GCFLAGS)
+
+$(SSOMP_EXE): ompssInsertion.c coordReader.c
+	$(GC) -o $@ $^ $(GCFLAGS)
+
+$(MMOMP_EXE): ompmmInsertion.c coordReader.c
+	$(GC) -o $@ $^ $(GCFLAGS)
+
+$(ISSOMP_EXE): ompssInsertion.c coordReader.c
+	$(ICC) -o $@ $^ $(ICCFLAGS)
+
+$(IMMOMP_EXE): ompssInsertion.c coordReader.c
+	$(ICC) -o $@ $^ $(ICCFLAGS)
 
 # Clean target
 clean:
-	rm -f ci fi comp fomp icomp ifomp
+	rm -f $(SSI_EXE) $(MMI_EXE) $(SSOMP_EXE) $(MMOMP_EXE) $(ISSOMP_EXE) $(IMMOMP_EXE)
